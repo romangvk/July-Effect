@@ -1,12 +1,14 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 
 export default class PatientsScreen extends React.Component {
+    timer = null;
     static navigationOptions = ({ navigation }) => {
         return {
             title: navigation.getParam('name', 'Patient'),
         };
     };
+
     render() {
         var path = this.props.navigation.getParam('path');
         return (
@@ -33,12 +35,29 @@ export default class PatientsScreen extends React.Component {
                 </View>
                 <View style={{ flex: 1 }}></View>
                 <TouchableOpacity
-                    onPress={() => { }}
+                    onPress={() => {
+                        if (this.timer != null) { clearTimeout(this.timer); }
+                        Alert.alert(
+                            'Give meds!',
+                            'Remember to give ' + this.props.navigation.getParam('name') + ' their ' + this.props.navigation.getParam('medication') + ' ' + this.props.navigation.getParam('frequency') + ' minutes from now!',
+                            [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                            { cancelable: false },
+                        );
+                        this.timer = setTimeout(() => {
+                            Alert.alert(
+                                'You forgot!',
+                                '' + this.props.navigation.getParam('name') + ' is now 4 mistakes away from death!',
+                                [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                                { cancelable: false },
+                            );
+
+                        }, 5000);
+                    }}
                     style={{ padding: 20, margin: 50, borderRadius: 20, backgroundColor: 'crimson' }}
                 >
                     <Text style={{ color: 'white', fontSize: 20 }}>Give Meds</Text>
                 </TouchableOpacity>
-            </View>
+            </View >
         );
     }
 }
